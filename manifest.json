@@ -1,0 +1,29 @@
+{
+
+  "manifest_version": 2,
+  "name": "kext",
+  "version": "1.0",
+
+  "description": "My personal extension",
+
+  "icons": {
+    "48": "border-48.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.mozilla.org/*"],
+      "js": ["kext.js"]
+    }
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "permissions": [
+    "menus",
+    "bookmarks",
+    "clipboardWrite"
+  ]
+}
