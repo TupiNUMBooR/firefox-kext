@@ -9,15 +9,28 @@ browser.menus.create({
   contexts: ["bookmark"]
 });
 
-browser.menus.onClicked.addListener((info) => {
+browser.menus.onClicked.addListener(async (info) => {
   if (!/kext-bm-dwn/.test(info.menuItemId)) return;
-  browser.bookmarks.get(info.bookmarkId).then(b => {
-      var t = md(b[0].title, b[0].url);
-      navigator.clipboard.writeText(t);
-      if (/kext-bm-dwn-rm/.test(info.menuItemId))
-        browser.bookmarks.remove(b[0].id);
-  });
+  var bs = await browser.bookmarks.get(info.bookmarkId);
+  var t = await bookmarksToMd(bs);
+  // t = t.slice(0,-1);
+  navigator.clipboard.writeText(t);
+  if (/kext-bm-dwn-rm/.test(info.menuItemId))
+    browser.bookmarks.remove(info.bookmarkId);
 });
+
+async function bookmarksToMd(bs) {
+  var t = "";
+  for (const b of bs) {
+    if (b.type != "folder") {
+      t += md(b.title, b.url) + "\n";
+    } else {
+      var bs2 = await browser.bookmarks.getChildren(b.id);
+      t += await bookmarksToMd(bs2);
+    }  
+  }
+  return t;
+}
 
 function md(title, url) {
   return `[${title}](${url})`;
