@@ -15,8 +15,9 @@ browser.menus.onClicked.addListener(async (info) => {
   var t = await bookmarksToMd(bs);
   // t = t.slice(0,-1);
   navigator.clipboard.writeText(t);
-  if (/kext-bm-dwn-rm/.test(info.menuItemId))
+  if (/kext-bm-dwn-rm/.test(info.menuItemId)) {
     browser.bookmarks.remove(info.bookmarkId);
+  }
 });
 
 async function bookmarksToMd(bs) {
@@ -33,5 +34,5 @@ async function bookmarksToMd(bs) {
 }
 
 function md(title, url) {
-  return `[${title}](${url})`;
+  return `- [${title}](${url})`;
 }
